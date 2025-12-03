@@ -1,0 +1,61 @@
+---
+title: "meta-analysis workshop"
+author: "Abdelaziz A. Awad"
+date: "2025-12-03"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# load the required libraries
+```{r}
+library(readxl)
+library(dmetar)
+library(meta)
+```
+
+#load the data
+```{r}
+df <- read_excel("data.xlsx")
+
+```
+
+#set the meta-analysis object
+```{r}
+m.bin <- metabin(event.e = event.e, 
+                 n.e = n.e,
+                 event.c = event.c,
+                 n.c = n.c,
+                 studlab = author,
+                 data = df,
+                 sm = "RR",
+                 method = "MH",
+                 MH.exact = TRUE,
+                 fixed = TRUE,
+                 random = FALSE)
+
+```
+
+#get the summary of the meta
+```{r}
+summary(m.bin)
+```
+
+#plot
+```{r, fig.width=10, fig.height=6, out.width="100%"}
+meta::forest(m.bin, 
+             sortvar = TE,
+             prediction = TRUE, test.overall = TRUE, 
+             print.tau2 = FALSE, label.e = "Music", label.c = "control",
+             type.study = "circle", col.diamond = "green", col.study = "orange")
+
+```
+
+#leave-one-out
+```{r, fig.width=10, fig.height=6, out.width="100%"}
+loo <- metainf(m.bin)
+meta::forest(loo, col = "blue", col.diamond = "red", type = "circle")
+```
+
