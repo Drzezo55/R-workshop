@@ -1,1 +1,1 @@
-# R-workshop
+# Meta-analysis workshop usign R
